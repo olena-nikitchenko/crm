@@ -1,39 +1,45 @@
+"use client";
+
 import React from "react";
-import clsx from "clsx";
-import { CompanyStatus } from "@/lib/api";
+import { useQuery } from "@tanstack/react-query";
+import { getCompanies } from "@/lib/api";
+import CompanyRow from "@/app/components/company-row";
 
-export interface StatusLabelProps {
-	status: CompanyStatus;
-	disabled?: boolean;
-	styled?: boolean;
-}
+export interface CompanyTableProps {}
 
-const labelByStatus = {
-	[CompanyStatus.Active]: "Active",
-	[CompanyStatus.NotActive]: "Not Active",
-	[CompanyStatus.Pending]: "Pending",
-	[CompanyStatus.Suspended]: "Suspended",
-};
+const headers = ["Category", "Company", "Status", "Promotion", "Country", "Joined date"];
 
-export default function StatusLabel({ status, disabled, styled = true }: StatusLabelProps) {
-	const label = labelByStatus[status];
-	if (!styled) return <>{label}</>;
+export default function CompanyTable({}: CompanyTableProps) {
+	const { data } = useQuery({
+		queryKey: ["companies"],
+		queryFn: () => getCompanies(),
+		staleTime: 10 * 1000,
+	});
 
 	return (
-		<div
-			className={clsx(
-				"inline-flex items-center py-1 px-3.5 rounded-3xl text-sm font-medium",
-				status === CompanyStatus.Active && "text-green-700 bg-green-100",
-				status === CompanyStatus.NotActive && "text-red-700 bg-red-100",
-				status === CompanyStatus.Pending && "text-orange-700 bg-orange-100",
-				status === CompanyStatus.Suspended && "text-blue-700 bg-blue-100",
-				{
-					["opacity-75 cursor-not-allowed"]: disabled,
-				},
-			)}
-		>
-			<div className="w-1 h-1 mr-2 rounded-full bg-current" />
-			{label}
+		<div className="py-8 px-10 bg-gray-100">
+			<table className="table-auto w-full border-separate border-spacing-y-2">
+				<thead>
+					<tr>
+						{headers.map((header, i) => (
+							<th
+								key={i}
+								className="pb-5 text-sm font-light text-gray-900"
+							>
+								{header}
+							</th>
+						))}
+					</tr>
+				</thead>
+				<tbody>
+					{data?.map(company => (
+						<CompanyRow
+							key={company.id}
+							company={company}
+						/>
+					))}
+				</tbody>
+			</table>
 		</div>
 	);
 }
