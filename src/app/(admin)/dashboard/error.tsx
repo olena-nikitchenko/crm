@@ -3,7 +3,7 @@
 import React from "react";
 import Button from "@/app/components/button";
 
-interface ErrorComponentProps {
+export interface ErrorComponentProps {
 	error: Error;
 	reset: () => void;
 }
