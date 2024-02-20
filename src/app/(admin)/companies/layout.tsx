@@ -1,15 +1,26 @@
-import React from "react";
-import Sidebar from "@/app/components/sidebar";
+import React from 'react';
 
-interface LayoutProps {
-	children: React.ReactNode;
+export interface LayoutProps {
+  children: React.ReactNode;
+  header: React.ReactNode;
+  toolbar: React.ReactNode;
+  modal: React.ReactNode;
 }
 
-export default function Layout({ children }: LayoutProps) {
-	return (
-		<>
-			<Sidebar />
-			<div className="ml-60">{children}</div>
-		</>
-	);
+export default function Layout({
+  children,
+  header,
+  toolbar,
+  modal,
+}: LayoutProps) {
+  return (
+    <>
+      {modal}
+      {header}
+      <main>
+        {toolbar}
+        {children}
+      </main>
+    </>
+  );
 }
